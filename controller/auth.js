@@ -18,7 +18,7 @@ const crearUsuario = async (req, res = response) => {
             return res.status(400).json({
                 ok:false,
                 msg: 'El email ya esta registrado'
-            })
+            });
         }
 
         const usuario = new Usuario( req.body );
