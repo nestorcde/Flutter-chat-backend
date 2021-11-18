@@ -54,8 +54,6 @@ const login = async (req, res = response)=>{
 
     const {email, password} = req.body;
 
-    
-
     try {
 
         //validar email
@@ -84,7 +82,7 @@ const login = async (req, res = response)=>{
             ok: true,
             usuario: usuarioDB,
             token
-        })
+        });
 
 
 
