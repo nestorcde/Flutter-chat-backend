@@ -1,12 +1,13 @@
 const { io } = require('../index');
 const { comprobarJWT } = require('../middlewares/validar-jwt');
-const { usuarioConectado, usuarioDesconectado, grabarMensaje} = require('../controller/socket');
+const { grabarMensaje, mensajeLeido} = require('../controller/mensaje');
+const { usuarioConectado, usuarioDesconectado} = require('../controller/usuario');
 const { registrarTurno } = require('../controller/turno');
 
 
 // Mensajes de Sockets
 io.on('connection', client => {
-    console.log('Cliente conectado');
+    //console.log('Cliente conectado');
 
     const [valido, uid] = comprobarJWT(client.handshake.headers['x-token']);
 
@@ -25,6 +26,13 @@ io.on('connection', client => {
         await grabarMensaje(payload);
         io.to(payload.para).emit('mensaje-personal', payload);
     });
+    
+    //Mensaje Leido
+    client.on('mensaje-leido', async (payload) => {
+        await mensajeLeido(payload);
+        io.emit.to(payload.deUid).emit('mensaje-leido');
+        //console.log('Cliente desconectado');
+    });
 
     //Grabar Turno
     client.on('registra-turno', async (payload)=> {
@@ -35,6 +43,6 @@ io.on('connection', client => {
     client.on('disconnect', () => {
         usuarioDesconectado(uid);
         io.emit('usuario-conectado-desconectado');
-        console.log('Cliente desconectado');
+        //console.log('Cliente desconectado');
     });
 });

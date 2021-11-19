@@ -41,6 +41,40 @@ const getMensajes = async (req, res = response)  => {
     
 };
 
+const grabarMensaje = async ( payload ) => {
+    /* payload:{
+        de: '',
+        para: '',
+        mensaje: ''
+     }*/
+    try {
+        const mensaje = new Mensaje(payload);
+        console.log('Grabando mensaje '+ mensaje['mensaje']);
+        await mensaje.save();
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
+const mensajeLeido = async ( payload ) => {
+    /* payload:{
+        uid: '''
+     }*/
+    try {
+        const {uid} = require(payload);
+        const mensaje = Mensaje.findBy({uid});
+        mensaje.estado = 1;
+        console.log('Mensaje Leido '+ mensaje['uid']);
+        await mensaje.save();
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
 module.exports = {
-    getMensajes
+    getMensajes,
+    grabarMensaje,
+    mensajeLeido
 }
