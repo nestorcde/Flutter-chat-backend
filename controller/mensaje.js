@@ -61,11 +61,13 @@ const mensajeLeido = async ( payload ) => {
     /* payload:{
         uid: '''
      }*/
+     //console.log("en mensajeLeido"+payload.uid);
     try {
-        const {uid} = require(payload);
-        const mensaje = Mensaje.findBy({uid});
+        const {uid} = payload;
+        const mensaje = await Mensaje.findById( payload.uid).exec();
+        console.log(mensaje);
         mensaje.estado = 1;
-        console.log('Mensaje Leido '+ mensaje['uid']);
+        console.log('Mensaje Leido '+ mensaje);
         await mensaje.save();
         return true;
     } catch (error) {

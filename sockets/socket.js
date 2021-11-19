@@ -30,7 +30,7 @@ io.on('connection', client => {
     //Mensaje Leido
     client.on('mensaje-leido', async (payload) => {
         await mensajeLeido(payload);
-        io.emit.to(payload.deUid).emit('mensaje-leido');
+        io.to(payload.deUid).emit('mensaje-leido',payload);
         //console.log('Cliente desconectado');
     });
 
