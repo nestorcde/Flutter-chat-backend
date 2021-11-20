@@ -17,7 +17,7 @@ io.on('connection', client => {
 
     //cliente conectado
     usuarioConectado(uid);
-    io.emit('usuario-conectado-desconectado');
+    io.emit('usuario-conectado-desconectado',{"uid":uid, "online":true});
 
     //unir al cliente a una sala con su uid como nombre de sala.
     client.join(uid);
@@ -31,7 +31,7 @@ io.on('connection', client => {
     });
     
     //Mensaje Leido
-    client.on('mensaje-leido', async (payload) => {
+    client.on('mensaje-leido-sale', async (payload) => {
         await mensajeLeido(payload);
         io.to(payload.deUid).emit('mensaje-leido',payload);
         //console.log('Cliente desconectado');
@@ -45,7 +45,7 @@ io.on('connection', client => {
 
     client.on('disconnect', () => {
         usuarioDesconectado(uid);
-        io.emit('usuario-conectado-desconectado');
+        io.emit('usuario-conectado-desconectado',{"uid":uid, "online":false});
         //console.log('Cliente desconectado');
     });
 });
