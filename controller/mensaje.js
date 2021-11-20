@@ -47,11 +47,16 @@ const grabarMensaje = async ( payload ) => {
         para: '',
         mensaje: ''
      }*/
+    // console.log('de: '+payload['de']);
+    // console.log('para: '+payload['para']);
+    // console.log('mensaje: '+payload['mensaje']);
     try {
         const mensaje = new Mensaje(payload);
-        console.log('Grabando mensaje '+ mensaje['mensaje']);
-        await mensaje.save();
-        return true;
+        //console.log('Grabando mensaje '+ mensaje['mensaje']);
+        
+        const msg = await mensaje.save();
+        //console.log('mensaje: '+msg);
+        return msg;
     } catch (error) {
         return false;
     }
@@ -65,9 +70,9 @@ const mensajeLeido = async ( payload ) => {
     try {
         const {uid} = payload;
         const mensaje = await Mensaje.findById( payload.uid).exec();
-        console.log(mensaje);
+        //console.log(mensaje);
         mensaje.estado = 1;
-        console.log('Mensaje Leido '+ mensaje);
+        //console.log('Mensaje Leido '+ mensaje);
         await mensaje.save();
         return true;
     } catch (error) {

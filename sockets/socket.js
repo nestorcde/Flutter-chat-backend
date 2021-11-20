@@ -3,6 +3,7 @@ const { comprobarJWT } = require('../middlewares/validar-jwt');
 const { grabarMensaje, mensajeLeido} = require('../controller/mensaje');
 const { usuarioConectado, usuarioDesconectado} = require('../controller/usuario');
 const { registrarTurno } = require('../controller/turno');
+const Mensaje = require('../models/mensaje');
 
 
 // Mensajes de Sockets
@@ -23,8 +24,10 @@ io.on('connection', client => {
 
     //Escuchar mensaje
     client.on('mensaje-personal', async (payload) => {
-        await grabarMensaje(payload);
-        io.to(payload.para).emit('mensaje-personal', payload);
+        
+        const msg = await grabarMensaje(payload);
+        io.to(payload.para).emit('mensaje-personal', msg);
+        io.to(payload.de).emit('mensaje-personal', msg);
     });
     
     //Mensaje Leido
