@@ -37,6 +37,11 @@ io.on('connection', client => {
         //console.log('Cliente desconectado');
     });
 
+    //Escribiendo
+    client.on('escribiendo-sale', async (payload) => {
+        io.to(payload.paraUid).emit('escribiendo',payload);
+    });
+
     //Grabar Turno
     client.on('registra-turno', async (payload)=> {
         await registrarTurno(payload);
