@@ -1,4 +1,5 @@
 const { Schema, model} = require('mongoose');
+const Mensaje = require('../models/mensaje');
 
 const UsuarioSchema = Schema({
     nombre: {
@@ -19,8 +20,9 @@ const UsuarioSchema = Schema({
         default: false,
     },
     noLeidos: {
-        type: Number,
-        default: 0,
+        type: Schema.Types.Number,
+        // ref: 'Mensaje',
+        default: 0
     },
 });
 

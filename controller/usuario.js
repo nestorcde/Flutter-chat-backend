@@ -1,5 +1,6 @@
 const { response } = require("express");
 const Usuario = require('../models/usuario');
+const Mensaje = require('../models/mensaje');
 
 
 
@@ -7,29 +8,81 @@ const Usuario = require('../models/usuario');
 const getUsuarios = async (req, res = response)  => {
     
 
-    try {
+    // try {
 
         const desde = Number( req.query.desde) || 0;
 
-        const usuarios= await Usuario
+        const usuarios1= await Usuario
             .find( { _id: { $ne: req.uid }})
             .sort('-online')
             .skip(desde)
             .limit(20);
+
+            let usuarios = []
+        
+        for (let usuario of usuarios1) {
+            
+            try {
+                await Mensaje.find({ $and: [{estado: 0, de: usuario._id, para: req.uid}] })
+                    .countDocuments()
+                    .exec()
+                    .then((value)=>{
+                        usuario.noLeidos = value
+                        usuarios.push(usuario);
+                });
+                
+            
+            } catch (error) {
+            console.log('error'+ error);
+            } 
+    
+            //return usuarios1
+        //      finally{
+            
+        //   }
+        }
+        //console.log('fin')
+
+        //const usuarios1 = await procesMultipleCandidates(usuarios);
+        
+        
         res.json({
             ok:true,
             usuarios
         });
-    } catch (error) {
-        return res.status(401).json({
-            ok: true,
-            msg: 'Hable con el administrador'
-        });
+    // } catch (error) {
+    //     return res.status(401).json({
+    //         ok: true,
+    //         msg: 'Hable con el administrador'
+    //     });
 
-    }
+    // }
     
     
 };
+
+async function procesMultipleCandidates  ( data)  {
+    let usuarios1 = []
+    //Promise.all(data.map(async (usuario) => {
+
+    for (const usuario of data) {
+      
+      try {
+        usuario.noLeidos = async() => await Mensaje.countDocuments({ estado: 0}, (_err, value)=>value).exec();
+        usuarios1.push(usuario)
+        console.log(usuario.toString())
+      } catch (error) {
+        console.log('error'+ error);
+      } 
+
+      //return usuarios1
+    //      finally{
+        
+    //   }
+    }
+    console.log('fin')
+    return usuarios1 // return without waiting for process of 
+  }
 
 const usuarioConectado = async ( uid = '' ) => {
     const usuario = await Usuario.findById(uid);

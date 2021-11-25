@@ -19,7 +19,7 @@ const getMensajes = async (req, res = response)  => {
             $or: [{de: miId, para: mensajeDe}, {de: mensajeDe, para: miId}]
         })
         .sort({createdAt: 'desc'})
-        .limit(30);
+        //.limit(30);
 
         // const mensajes= await Mensaje
         //     .find( { _id: { $ne: req.uid }})
