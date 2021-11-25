@@ -18,6 +18,10 @@ const UsuarioSchema = Schema({
         type: Boolean,
         default: false,
     },
+    noLeidos: {
+        type: Number,
+        default: 0,
+    },
 });
 
 UsuarioSchema.method('toJSON', function(){
