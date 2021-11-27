@@ -21,6 +21,11 @@ const TurnoSchema = Schema({
     hora: {
         type: Schema.Types.String,
         required: true,
+    },
+    fecha: {
+        type: Schema.Types.Date,
+        required: true,
+        min: Date.now()
     }
 },{
     timestamps: true

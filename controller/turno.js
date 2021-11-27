@@ -67,14 +67,16 @@ const getTurnos = async (req, res = response)  => {
 
 const registrarTurno = async (req, res = response ) => {
     /* payload:{
-        de: '',
-        para: '',
-        mensaje: ''
+        dia: 0,
+        mes: 0,
+        anho: 0,
+        hora: ''
      }*/
     try {
+        const {dia, mes, anho} = req.body;
+        const fecha = new Date(Date.UTC(anho, mes, dia, 0, 0, 0))
+        req.body.fecha = fecha;
         req.body.uid = req.uid;
-        // console.log(req.body);
-        // console.log('Mi uid: '+req.uid);
         const turno = new Turno(req.body);
         console.log('Grabando Turno '+ turno['uid']);
         await turno.save();
@@ -92,16 +94,38 @@ const registrarTurno = async (req, res = response ) => {
 
 const eliminarTurno = async (req, res = response ) => {
     /* payload:{
-        de: '',
-        para: '',
-        mensaje: ''
+        id: 'id'
      }*/
     try {
         const id = req.body.id;
         console.log('id: '+id);
-        //const turno = Turno.findById(req.body['id']);
         console.log('Eliminando Turno '+ id);
         await Turno.findByIdAndDelete(id).exec();
+        return res.status(401).json({
+            ok: true,
+            msg: 'Turno Eliminado'
+        });
+    } catch (error) {
+        return res.status(401).json({
+            ok: false,
+            msg: 'Hable con el administrador',
+            error
+        });
+    }
+};
+
+const verificarTurno = async (req, res = response ) => {
+    /* payload:{
+        dia: 0,
+        mes: 0,
+        anho: 0,
+     }*/
+    try {
+        const uid = req.uid;
+        const {dia, mes, anho} = req.body;
+        const fecha = new Date(Date.UTC(anho, mes, dia, 0, 0, 0))
+        const turnos = await Turno.find({ uid: uid, fecha: {$gte: new Date()}})
+        console.log(turnos);
         return res.status(401).json({
             ok: true,
             msg: 'Turno Eliminado'
@@ -118,5 +142,6 @@ const eliminarTurno = async (req, res = response ) => {
 module.exports = {
     getTurnos,
     registrarTurno,
-    eliminarTurno
+    eliminarTurno,
+    verificarTurno
 }
