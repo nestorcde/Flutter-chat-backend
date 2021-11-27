@@ -2,7 +2,8 @@ const { Schema, model} = require('mongoose');
 
 const TurnoSchema = Schema({
     uid: {
-        type: Schema.Types.String,
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
         required: true
     },
     dia: {
@@ -26,7 +27,7 @@ const TurnoSchema = Schema({
 });
 
 TurnoSchema.method('toJSON', function(){
-    const { __v, _id, ...object} = this.toObject();
+    const { __v, ...object} = this.toObject();
     return object;
 });
 

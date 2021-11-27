@@ -12,6 +12,7 @@ const getTurnos = async (req, res = response)  => {
         const miId = req.uid;
 
         const turnos = await Turno.find({})
+        .populate('uid', 'nombre email')
         .sort({
             anho: 'desc',
             mes: 'desc',
@@ -71,12 +72,39 @@ const registrarTurno = async (req, res = response ) => {
         mensaje: ''
      }*/
     try {
+        req.body.uid = req.uid;
+        // console.log(req.body);
+        // console.log('Mi uid: '+req.uid);
         const turno = new Turno(req.body);
-        console.log('Grabando Turno '+ turno['usuario']);
+        console.log('Grabando Turno '+ turno['uid']);
         await turno.save();
         return res.status(401).json({
             ok: true,
-            turno
+            msg: 'Turno Registrado'
+        });
+    } catch (error) {
+        return res.status(401).json({
+            ok: false,
+            msg: 'Error: Hable con el administrador'
+        });
+    }
+};
+
+const eliminarTurno = async (req, res = response ) => {
+    /* payload:{
+        de: '',
+        para: '',
+        mensaje: ''
+     }*/
+    try {
+        const id = req.body.id;
+        console.log('id: '+id);
+        //const turno = Turno.findById(req.body['id']);
+        console.log('Eliminando Turno '+ id);
+        await Turno.findByIdAndDelete(id).exec();
+        return res.status(401).json({
+            ok: true,
+            msg: 'Turno Eliminado'
         });
     } catch (error) {
         return res.status(401).json({
@@ -89,5 +117,6 @@ const registrarTurno = async (req, res = response ) => {
 
 module.exports = {
     getTurnos,
-    registrarTurno
+    registrarTurno,
+    eliminarTurno
 }
