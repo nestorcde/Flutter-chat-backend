@@ -1,5 +1,7 @@
 const { Schema, model} = require('mongoose');
 
+const fecha = Date.now();
+
 const TurnoSchema = Schema({
     uid: {
         type: Schema.Types.ObjectId,
@@ -25,7 +27,7 @@ const TurnoSchema = Schema({
     fecha: {
         type: Schema.Types.Date,
         required: true,
-        min: Date.now()
+        min: Date.UTC(fecha.year, fecha.month, fecha.day,0,0,0,0)
     }
 },{
     timestamps: true
