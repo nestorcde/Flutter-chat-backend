@@ -13,7 +13,7 @@ const router = Router();
 router.get('/',validarJWT, getTurnos);
 router.post('/nuevo',validarJWT,registrarTurno);
 router.delete('/',validarJWT,eliminarTurno);
-router.get('/verificar',validarJWT,verificarTurno);
+router.post('/verificar',validarJWT,verificarTurno);
 
 
 

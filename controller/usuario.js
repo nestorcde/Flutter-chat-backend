@@ -12,11 +12,22 @@ const getUsuarios = async (req, res = response)  => {
 
         const desde = Number( req.query.desde) || 0;
 
-        const usuarios1= await Usuario
-            .find( { _id: { $ne: req.uid }})
+        const miUsuario = await Usuario.findById(req.uid);
+        let usuarios1 = [];
+
+        if(miUsuario.admin){
+            usuarios1= await Usuario
+                .find( { $and: [{ _id: { $ne: req.uid }}, {admin: false}]})
+                .sort('-online')
+                .skip(desde)
+                .limit(20);
+        }else{
+            usuarios1= await Usuario
+            .find( { $and: [{ _id: { $ne: req.uid }}, {admin: true}]})
             .sort('-online')
             .skip(desde)
             .limit(20);
+        }
 
             let usuarios = []
         

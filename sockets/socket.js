@@ -44,7 +44,7 @@ io.on('connection', client => {
 
     //Grabar Turno
     client.on('registra-turno', async (payload)=> {
-        await registrarTurno(payload);
+        //await registrarTurno(payload);
         io.emit('registra-turno', payload);
     });
 

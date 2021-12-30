@@ -23,12 +23,16 @@ require('./sockets/socket');
 // Path público
 const publicPath = path.resolve( __dirname, 'public' );
 app.use( express.static( publicPath ) );
+// Path uploads
+const uploadsPath = path.resolve( __dirname, 'uploads' );
+app.use('/uploads',express.static(uploadsPath ) );
 
 // Mis Rutas
 app.use('/api/login', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuario'));
 app.use('/api/mensajes', require('./routes/mensaje'));
 app.use('/api/turnos', require('./routes/turno'));
+app.use('/api/profile', require('./routes/profile'));
 
 
 

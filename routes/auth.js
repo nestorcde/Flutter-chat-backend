@@ -10,6 +10,8 @@ const router = Router();
 
 router.post('/new', [
     check('nombre','El nombre es obligatorio').notEmpty(),
+    check('telefono','El telefono es obligatorio').notEmpty(),
+    check('telefono','El telefono debe ser valido').isMobilePhone('es-PY'),
     check('email','El email es obligatorio').isEmail(),
     check('password','La contraseña es obligatoria').notEmpty(),
     validarCampos

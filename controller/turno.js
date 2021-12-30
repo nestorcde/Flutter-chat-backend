@@ -57,7 +57,8 @@ const getTurnos = async (req, res = response)  => {
             ok: true,
             msg: 'Hable con el administrador',
             fecha: "2000-01-01T00:00:00.000Z",
-            conn: false
+            conn: false,
+            propio: false
         });
 
     }
@@ -84,14 +85,16 @@ const registrarTurno = async (req, res = response ) => {
             ok: true,
             msg: 'Turno Registrado',
             fecha: "2000-01-01T00:00:00.000Z",
-            conn: true
+            conn: true,
+            propio: false
         });
     } catch (error) {
         return res.status(401).json({
             ok: false,
             msg: 'Error: Hable con el administrador',
             fecha: "2000-01-01T00:00:00.000Z",
-            conn: false
+            conn: false,
+            propio: false
         });
     }
 };
@@ -108,44 +111,63 @@ const eliminarTurno = async (req, res = response ) => {
             ok: true,
             msg: 'Turno Eliminado',
             fecha: "2000-01-01T00:00:00.000Z",
-            conn: true
+            conn: true,
+            propio: false
         });
     } catch (error) {
         return res.status(401).json({
             ok: false,
             msg: 'Hable con el administrador',
             fecha: "2000-01-01T00:00:00.000Z",
-            conn: false
+            conn: false,
+            propio: false
         });
     }
 };
 
 const verificarTurno = async (req, res = response ) => {
     try {
-        
+        const {dia, mes, anho, hora} = req.body;
+        const fecha = new Date(Date.UTC(anho, mes-1, dia, 0, 0, 0, 0));
+        const hoy = new Date();
+        const ayer = new Date(Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDay() , 0, 0, 0, 0));
+        //console.log(ayer);
         const uid = req.uid;
-        const turnos = await Turno.find({ uid: uid, fecha: {$gte: new Date()}});
+        const turnos = await Turno.find({ $or: [{uid: uid, fecha: {$gte: ayer}} , {hora: hora, fecha: fecha}]});
         if(turnos.length==0){
             return res.status(200).json({
                 ok: true,
                 conn: true,
                 msg: 'No tiene turno marcado',
-                fecha: "2000-01-01T00:00:00.000Z"
+                fecha: "2000-01-01T00:00:00.000Z",
+                propio: false
             });
         }else{
-            return res.status(200).json({
-                ok: false,
-                conn: true,
-                msg: 'Tiene turno marcado',
-                fecha: turnos[0].fecha
-            })
+            if(turnos[0]['uid']==uid){
+                return res.status(200).json({
+                    ok: false,
+                    conn: true,
+                    msg: 'Tiene turno marcado',
+                    fecha: turnos[0].fecha,
+                    propio: true
+                });
+            }else{
+                return res.status(200).json({
+                    ok: false,
+                    conn: true,
+                    msg: 'Turno ocupado por otra persona',
+                    fecha: turnos[0].fecha,
+                    propio: false
+                });
+            }
         }
     } catch (error) {
         return res.status(401).json({
             ok: false,
             conn: false,
             msg: 'Hable con el administrador',
-            fecha: "2000-01-01T00:00:00.000Z"
+            fecha: "2000-01-01T00:00:00.000Z",
+            propio: false
         });
     }
 };
