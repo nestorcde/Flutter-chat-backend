@@ -17,7 +17,9 @@ const storage = multer.diskStorage({
     },
     filename: function(req, file, cb){
         const posicion = file.mimetype.search('/') ;
-        cb(null, req.body.uid +"."+ file.mimetype.trim().substring(posicion+1));
+        const random = Math.floor(Math.random() * (1000 - 1)) + 1;
+        req.body.random = random;
+        cb(null, req.body.uid +random.toString() +"."+ file.mimetype.trim().substring(posicion+1));
     }
 });
 const upload = multer({

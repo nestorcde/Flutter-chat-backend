@@ -37,6 +37,7 @@ const setUsuarioImage = async (req, res = response) => {
     try {        
         
         const miUsuario = await Usuario.findById(req.body.uid);
+        const random = req.body.random;
         
         if(req.file){
             var files = [];
@@ -49,7 +50,6 @@ const setUsuarioImage = async (req, res = response) => {
                 }
             });
             const posicion = req.file.mimetype.search('/') ;
-            const random = Math.floor(Math.random() * (1000 - 1)) + 1;
             miUsuario.imgProfile = req.body.uid+random.toString() +"."+ req.file.mimetype.trim().substring(posicion+1);
             miUsuario.save();
             //console.log(req.file);
