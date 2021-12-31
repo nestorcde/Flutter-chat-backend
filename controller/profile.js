@@ -1,7 +1,7 @@
 const { response } = require("express");
 const Usuario = require('../models/usuario');
 const multer = require('multer');
-
+var fs = require('fs');
 
 const updateProfile = async (req, res = response) => {
 
@@ -39,8 +39,18 @@ const setUsuarioImage = async (req, res = response) => {
         const miUsuario = await Usuario.findById(req.body.uid);
         
         if(req.file){
+            var files = [];
+            files.push('../uploads/'+miUsuario.imgProfile);
+            deleteFiles(files, function(err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Archivo removido');
+                }
+            });
             const posicion = req.file.mimetype.search('/') ;
-            miUsuario.imgProfile = req.body.uid +"."+ req.file.mimetype.trim().substring(posicion+1);
+            const random = Math.floor(Math.random() * (1000 - 1)) + 1;
+            miUsuario.imgProfile = req.body.uid+random.toString() +"."+ req.file.mimetype.trim().substring(posicion+1);
             miUsuario.save();
             //console.log(req.file);
             res.status(200).json({
@@ -61,6 +71,21 @@ const setUsuarioImage = async (req, res = response) => {
         });
     }
 };
+
+function deleteFiles(files, callback){
+    var i = files.length;
+    files.forEach(function(filepath){
+      fs.unlink(filepath, function(err) {
+        i--;
+        if (err) {
+          callback(err);
+          return;
+        } else if (i <= 0) {
+          callback(null);
+        }
+      });
+    });
+  }
 
 module.exports = {
     updateProfile,
