@@ -41,7 +41,7 @@ const setUsuarioImage = async (req, res = response) => {
         
         if(req.file){
             var files = [];
-            files.push('../uploads/'+miUsuario.imgProfile);
+            files.push('uploads/'+miUsuario.imgProfile);
             deleteFiles(files, function(err) {
                 if (err) {
                     console.log(err);
