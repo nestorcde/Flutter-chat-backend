@@ -8,7 +8,7 @@ const Usuario = require('../models/usuario');
 const getTurnos = async (req, res = response)  => {
     
 
-    try {
+    // try {
 
         const turnos = await Turno.find({})
         .populate('uid', 'nombre email telefono')
@@ -53,16 +53,16 @@ const getTurnos = async (req, res = response)  => {
             ok:true,
             event
         });
-    } catch (error) {
-        return res.status(401).json({
-            ok: true,
-            msg: 'Hable con el administrador',
-            fecha: "2000-01-01T00:00:00.000Z",
-            conn: false,
-            propio: false
-        });
+    // } catch (error) {
+    //     return res.status(401).json({
+    //         ok: true,
+    //         msg: 'Hable con el administrador',
+    //         fecha: "2000-01-01T00:00:00.000Z",
+    //         conn: false,
+    //         propio: false
+    //     });
 
-    }
+    // }
     
     
 };
