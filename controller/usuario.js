@@ -8,7 +8,7 @@ const Mensaje = require('../models/mensaje');
 const getUsuarios = async (req, res = response)  => {
     
 
-    // try {
+    try {
 
         const desde = Number( req.query.desde) || 0;
 
@@ -46,54 +46,23 @@ const getUsuarios = async (req, res = response)  => {
             } catch (error) {
             console.log('error'+ error);
             } 
-    
-            //return usuarios1
-        //      finally{
-            
-        //   }
         }
-        //console.log('fin')
-
-        //const usuarios1 = await procesMultipleCandidates(usuarios);
         
         
         res.json({
             ok:true,
             usuarios
         });
-    // } catch (error) {
-    //     return res.status(401).json({
-    //         ok: true,
-    //         msg: 'Hable con el administrador'
-    //     });
+    } catch (error) {
+        return res.status(401).json({
+            ok: true,
+            msg: 'Hable con el administrador'
+        });
 
-    // }
+    }
     
     
 };
-
-async function procesMultipleCandidates  ( data)  {
-    let usuarios1 = []
-    //Promise.all(data.map(async (usuario) => {
-
-    for (const usuario of data) {
-      
-      try {
-        usuario.noLeidos = async() => await Mensaje.countDocuments({ estado: 0}, (_err, value)=>value).exec();
-        usuarios1.push(usuario)
-        console.log(usuario.toString())
-      } catch (error) {
-        console.log('error'+ error);
-      } 
-
-      //return usuarios1
-    //      finally{
-        
-    //   }
-    }
-    console.log('fin')
-    return usuarios1 // return without waiting for process of 
-  }
 
 const usuarioConectado = async ( uid = '' ) => {
     const usuario = await Usuario.findById(uid);
@@ -109,8 +78,32 @@ const usuarioDesconectado = async ( uid = '' ) => {
     return usuario;
 }
 
+const verificado = async ( req, res = response ) => {
+    try {
+        const {uid, valor} = req.body;
+
+        const usuario = await Usuario.findById(uid);
+        usuario.revisado = valor;
+        await usuario.save();
+        
+        return res.status(200).json({
+            ok: true,
+            usuario
+        });
+        
+    } catch (error) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+
+        });
+    }
+}
+
+
 module.exports = {
     getUsuarios,
     usuarioConectado,
-    usuarioDesconectado
+    usuarioDesconectado,
+    verificado
 }

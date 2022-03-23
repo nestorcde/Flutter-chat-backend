@@ -48,6 +48,12 @@ io.on('connection', client => {
         io.emit('registra-turno', payload);
     });
 
+    //Usuario Revisado/Desrevisado
+    client.on('revisa-usuario', async (payload)=> {
+        //await registrarTurno(payload);
+        io.to(payload.uid).emit('reiniciar',payload);
+    });
+
     client.on('disconnect', () => {
         usuarioDesconectado(uid);
         io.emit('usuario-conectado-desconectado',{"uid":uid, "online":false});

@@ -1,5 +1,6 @@
 const { response } = require("express");
 const Turno = require('../models/turno');
+const Usuario = require('../models/usuario');
 
 
 
@@ -10,7 +11,7 @@ const getTurnos = async (req, res = response)  => {
     try {
 
         const turnos = await Turno.find({})
-        .populate('uid', 'nombre email')
+        .populate('uid', 'nombre email telefono')
         .sort({
             anho: 'desc',
             mes: 'desc',
@@ -78,6 +79,10 @@ const registrarTurno = async (req, res = response ) => {
         const fecha = new Date(Date.UTC(anho, mes-1, dia, 0, 0, 0, 0));
         req.body.fecha = fecha;
         req.body.uid = req.uid;
+        const usuario = await Usuario.findById(req.uid);
+        if(!usuario.admin){
+            req.body.nombre = usuario.nombre;
+        }
         const turno = new Turno(req.body);
         console.log('Grabando Turno '+ turno['uid']);
         await turno.save();
@@ -133,6 +138,7 @@ const verificarTurno = async (req, res = response ) => {
         const ayer = new Date(Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDay() , 0, 0, 0, 0));
         //console.log(ayer);
         const uid = req.uid;
+        const usuario = await Usuario.findById(uid);
         const turnos = await Turno.find({ $or: [{uid: uid, fecha: {$gte: ayer}} , {hora: hora, fecha: fecha}]});
         if(turnos.length==0){
             return res.status(200).json({
@@ -144,13 +150,23 @@ const verificarTurno = async (req, res = response ) => {
             });
         }else{
             if(turnos[0]['uid']==uid){
-                return res.status(200).json({
-                    ok: false,
-                    conn: true,
-                    msg: 'Tiene turno marcado',
-                    fecha: turnos[0].fecha,
-                    propio: true
-                });
+                if(usuario.admin){
+                    return res.status(200).json({
+                        ok: true,
+                        conn: true,
+                        msg: 'No tiene turno marcado',
+                        fecha: "2000-01-01T00:00:00.000Z",
+                        propio: false
+                    });
+                }else{
+                    return res.status(200).json({
+                        ok: false,
+                        conn: true,
+                        msg: 'Tiene turno marcado',
+                        fecha: turnos[0].fecha,
+                        propio: true
+                    });
+                }
             }else{
                 return res.status(200).json({
                     ok: false,

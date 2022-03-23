@@ -8,6 +8,10 @@ const TurnoSchema = Schema({
         ref: 'Usuario',
         required: true
     },
+    nombre: {
+        type: Schema.Types.String,
+        required: true,
+    },
     dia: {
         type: Schema.Types.Number,
         required: true,
