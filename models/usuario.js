@@ -41,6 +41,10 @@ const UsuarioSchema = Schema({
         type: Boolean,
         default: false,
     },
+    tutorial: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 UsuarioSchema.method('toJSON', function(){

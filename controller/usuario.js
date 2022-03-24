@@ -69,14 +69,14 @@ const usuarioConectado = async ( uid = '' ) => {
     usuario.online = true;
     await usuario.save();
     return usuario;
-}
+};
 
 const usuarioDesconectado = async ( uid = '' ) => {
     const usuario = await Usuario.findById(uid);
     usuario.online = false;
     await usuario.save();
     return usuario;
-}
+};
 
 const verificado = async ( req, res = response ) => {
     try {
@@ -98,12 +98,33 @@ const verificado = async ( req, res = response ) => {
 
         });
     }
-}
+};
+
+const setTutorial = async ( req, res ) => {
+    try {
+        const {uid } = req.body;
+        const usuario = await Usuario.findById(uid);
+        usuario.tutorial = true;
+        await usuario.save();
+
+        return res.status(200).json({
+            ok: true,
+            usuario
+        });
+    } catch (error) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+
+        });
+    }
+};
 
 
 module.exports = {
     getUsuarios,
     usuarioConectado,
     usuarioDesconectado,
-    verificado
-}
+    verificado,
+    setTutorial
+};
