@@ -12,6 +12,14 @@ const TurnoSchema = Schema({
         type: Schema.Types.String,
         required: true,
     },
+    email: {
+        type: Schema.Types.String,
+        required: false,
+    },
+    telefono: {
+        type: Schema.Types.String,
+        required: false,
+    },
     dia: {
         type: Schema.Types.Number,
         required: true,

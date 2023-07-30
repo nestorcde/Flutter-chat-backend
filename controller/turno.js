@@ -74,7 +74,7 @@ const registrarTurno = async (req, res = response ) => {
         anho: 0,
         hora: ''
      }*/
-    try {
+    //try {
         const {dia, mes, anho} = req.body;
         const fecha = new Date(Date.UTC(anho, mes-1, dia, 0, 0, 0, 0));
         req.body.fecha = fecha;
@@ -93,15 +93,15 @@ const registrarTurno = async (req, res = response ) => {
             conn: true,
             propio: false
         });
-    } catch (error) {
-        return res.status(401).json({
-            ok: false,
-            msg: 'Error: Hable con el administrador',
-            fecha: "2000-01-01T00:00:00.000Z",
-            conn: false,
-            propio: false
-        });
-    }
+    // } catch (error) {
+    //     return res.status(401).json({
+    //         ok: false,
+    //         msg: 'Error: Hable con el administrador',
+    //         fecha: "2000-01-01T00:00:00.000Z",
+    //         conn: false,
+    //         propio: false
+    //     });
+    // }
 };
 
 const eliminarTurno = async (req, res = response ) => {
@@ -140,6 +140,7 @@ const verificarTurno = async (req, res = response ) => {
         const uid = req.uid;
         const usuario = await Usuario.findById(uid);
         const turnos = await Turno.find({ $or: [{uid: uid, fecha: {$gte: ayer}} , {hora: hora, fecha: fecha}]});
+        console.log(turnos);
         if(turnos.length==0){
             return res.status(200).json({
                 ok: true,
