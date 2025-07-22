@@ -1,0 +1,10 @@
+{
+    "chat.agent.enabled": true,
+    "chat.extensionTools.enabled": true,
+    "chat.mcp.enabled": true,
+    "chat.promptFiles": true,
+    "chat.sendElementsToChat.attachCSS": true,
+    "chat.edits2.enabled": true,
+    "interactiveWindow.promptToSaveOnClose": true,
+    "interactiveWindow.executeWithShiftEnter": true
+}
